@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة مؤشرات خطة التحسين | الثانوية التاسعة للبنات بسكاكا</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { sans: ['"IBM Plex Sans Arabic"', 'Tahoma', 'sans-serif'] },
+        colors: {
+          ink: '#0f2a2e',
+          excel: '#0a9159',
+          prog: '#1570ef',
+          launch: '#dc6803',
+          prep: '#d92d20'
+        }
+      }
+    }
+  };
+</script>
+<style>
+  body { font-family: "IBM Plex Sans Arabic", Tahoma, sans-serif; background: #f3f5f4; color: #0f2a2e; }
+  .num { font-variant-numeric: tabular-nums; direction: ltr; unicode-bidi: isolate; display: inline-block; }
+  .card { background: #fff; border: 1px solid #e3e8e6; border-radius: 18px; box-shadow: 0 1px 2px rgba(15,42,46,.04), 0 8px 24px -16px rgba(15,42,46,.18); }
+  .hero { background: radial-gradient(1200px 400px at 85% -20%, #1b6b5a 0%, transparent 60%), linear-gradient(135deg, #0c2f33 0%, #0f3d3a 55%, #12514a 100%); }
+  .alert-ring { box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(220,104,3,.55), 0 14px 30px -18px rgba(220,104,3,.7); }
+  .pulse-dot { animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1);} 50% { opacity: .35; transform: scale(1.5);} }
+  @media (prefers-reduced-motion: reduce) { .pulse-dot { animation: none; } }
+  .chip { border: 1px solid #d5dcda; border-radius: 999px; padding: .35rem .9rem; font-size: .85rem; background: #fff; cursor: pointer; transition: all .15s; white-space: nowrap; }
+  .chip:hover { border-color: #0f3d3a; }
+  .chip.active { background: #0f3d3a; color: #fff; border-color: #0f3d3a; }
+  .chip:focus-visible, select:focus-visible, input:focus-visible, button:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+  .track { background: #edf1ef; border-radius: 999px; height: 8px; overflow: hidden; }
+  .track > span { display: block; height: 100%; border-radius: 999px; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; }
+  thead th { position: sticky; top: 0; background: #f6f8f7; font-weight: 600; font-size: .8rem; color: #47605f; text-align: right; padding: .7rem .8rem; border-bottom: 1px solid #e3e8e6; white-space: nowrap; }
+  tbody td { padding: .7rem .8rem; border-bottom: 1px solid #eef2f0; font-size: .9rem; vertical-align: middle; }
+  tbody tr:hover { background: #fafcfb; }
+  .scroll-x { overflow-x: auto; }
+  .field { border: 1px solid #d5dcda; border-radius: 10px; padding: .45rem .7rem; background: #fff; font-family: inherit; font-size: .88rem; }
+  @media print {
+    body { background: #fff; }
+    .no-print { display: none !important; }
+    .card { box-shadow: none; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ الترويسة ============ -->
+<header class="hero text-white">
+  <div class="max-w-[1500px] mx-auto px-4 sm:px-8 py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center gap-6">
+      <div>
+        <p class="text-emerald-200 text-sm font-medium tracking-wide">خطة التحسين والتطوير المدرسي · دورة التقويم الثانية · تقويم ذاتي</p>
+        <h1 class="text-2xl sm:text-4xl font-bold mt-2 leading-snug">المدرسة الثانوية التاسعة للبنات بسكاكا <span class="font-light text-emerald-100">— مسارات</span></h1>
+        <div class="flex flex-wrap gap-2 mt-4 text-sm">
+          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1">الرقم الوزاري: <span class="num font-semibold">S-M3985146</span></span>
+          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1">الإدارة العامة للتعليم بمنطقة الجوف</span>
+          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1">حكومي · بنات</span>
+          <span class="bg-white/10 border border-white/15 rounded-full px-3 py-1">عدد الطالبات: <span class="num font-semibold">230</span></span>
+        </div>
+      </div>
+      <div class="justify-self-center bg-white/10 border border-amber-300/50 rounded-2xl px-8 py-4 text-center">
+        <p class="text-sm text-emerald-200 text-center">مديرة المدرسة</p>
+        <p class="text-2xl sm:text-3xl font-bold text-amber-200 mt-1 text-center whitespace-nowrap">الأستاذة عبير العلي</p>
+      </div>
+      <div class="justify-self-center lg:justify-self-end no-print">
+        <button onclick="window.print()" class="bg-white text-ink font-semibold rounded-xl px-4 py-2 text-sm hover:bg-emerald-50">طباعة / حفظ PDF</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-[1500px] mx-auto px-4 sm:px-8 py-8 space-y-8">
+
+  <!-- ============ بطاقات المؤشرات العليا ============ -->
+  <section aria-label="بطاقات المؤشرات العليا">
+    <div id="kpiCards" class="grid grid-cols-2 lg:grid-cols-5 gap-4"></div>
+    <p class="text-xs text-slate-500 mt-3">مستويات الأداء وفق التقرير: التميز 90 فأكثر · التقدم من 75 إلى أقل من 90 · الانطلاق من 50 إلى أقل من 75 · التهيئة أقل من 50. نتيجة التقويم الذاتي ليست تصنيفاً للمدرسة؛ التصنيف المعتمد يصدر بعد التقويم الخارجي.</p>
+  </section>
+
+  <!-- ============ أولويات التحسين ============ -->
+  <section class="card p-5 sm:p-7 border-orange-200" aria-label="أولويات التحسين">
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+      <div class="flex items-center gap-3">
+        <span class="relative flex h-3 w-3"><span class="pulse-dot absolute inline-flex h-full w-full rounded-full bg-prep"></span></span>
+        <div>
+          <h2 class="text-xl font-bold">أولويات التحسين: ثلاثة مؤشرات دون مستوى التميز</h2>
+          <p class="text-sm text-slate-500">من أصل 45 مؤشراً في التقرير. القيم المستهدفة مقترحات تخطيطية تعتمدها لجنة التميز والجودة.</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 no-print" role="group" aria-label="مرحلة الاستهداف">
+        <span class="text-sm text-slate-500">عرض مستهدف:</span>
+        <button class="chip active" data-phase="0">المرحلة الأولى (نهاية العام الحالي)</button>
+        <button class="chip" data-phase="1">المرحلة الثانية (نهاية العام التالي)</button>
+      </div>
+    </div>
+    <div id="gapCards" class="grid md:grid-cols-3 gap-5"></div>
+    <div class="grid lg:grid-cols-3 gap-5 mt-6">
+      <div class="lg:col-span-2">
+        <h3 class="font-semibold mb-2">الحالي مقابل المستهدف وحد التميز</h3>
+        <div class="h-72"><canvas id="targetChart"></canvas></div>
+      </div>
+      <div class="bg-orange-50 border border-orange-200 rounded-2xl p-5 text-sm leading-7">
+        <h3 class="font-bold text-base mb-2 text-orange-900">القراءة التحليلية</h3>
+        <ul class="list-disc pr-5 space-y-1 text-orange-950">
+          <li>مجال التعليم والتعلم <span class="num font-semibold">99%</span> مقابل نواتج التعلم <span class="num font-semibold">83.25%</span>: فجوة <span class="num font-semibold">15.75</span> نقطة بين العمليات والنواتج.</li>
+          <li>الفجوة محصورة في معيار التحصيل التعليمي (<span class="num font-semibold">79.5%</span>)، بينما التطور الشخصي والصحي والاجتماعي <span class="num font-semibold">98.75%</span>.</li>
+          <li>الرخصة المهنية (<span class="num font-semibold">73.25%</span>) أدنى مؤشر في التقرير، وهي ما أنزل معيار التطوير المؤسسي إلى <span class="num font-semibold">89%</span>.</li>
+          <li>مؤشرات العمليات مقدَّرة ذاتياً، أما التحصيلي والقدرات فاختبارات وطنية مقننة؛ لذا يلزم تدقيق الشواهد قبل التقويم الخارجي.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ الرسوم البيانية ============ -->
+  <section class="grid lg:grid-cols-5 gap-5" aria-label="الرسوم البيانية">
+    <div class="card p-5 sm:p-6 lg:col-span-2">
+      <h2 class="text-lg font-bold">أداء المجالات الأربعة</h2>
+      <p class="text-sm text-slate-500 mb-3">مقارنة بحد التميز (90%). المحور يبدأ من 60 لإبراز الفروق.</p>
+      <div class="h-80"><canvas id="radarChart"></canvas></div>
+    </div>
+    <div class="card p-5 sm:p-6 lg:col-span-3">
+      <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+        <div>
+          <h2 class="text-lg font-bold">أداء المعايير</h2>
+          <p class="text-sm text-slate-500">11 معياراً، ملونة حسب مستوى الأداء. الخط المتقطع = حد التميز.</p>
+        </div>
+        <select id="stdDomain" class="field no-print" aria-label="تصفية المعايير حسب المجال"></select>
+      </div>
+      <div class="h-80"><canvas id="stdChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ============ مستكشف المؤشرات ============ -->
+  <section class="card p-5 sm:p-7" aria-label="مستكشف المؤشرات">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+      <div>
+        <h2 class="text-xl font-bold">مستكشف المؤشرات</h2>
+        <p class="text-sm text-slate-500">جميع مؤشرات التقرير بنسبها الأصلية. <span id="indCount" class="font-semibold text-ink"></span></p>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center no-print">
+        <input id="indSearch" type="search" class="field w-52" placeholder="بحث بالرقم أو النص" aria-label="بحث في المؤشرات">
+        <select id="indDomain" class="field" aria-label="المجال"></select>
+        <select id="indSort" class="field" aria-label="الترتيب">
+          <option value="code">الترتيب: حسب رقم المؤشر</option>
+          <option value="asc">الترتيب: الأدنى أولاً</option>
+          <option value="desc">الترتيب: الأعلى أولاً</option>
+        </select>
+      </div>
+    </div>
+    <div id="levelChips" class="flex flex-wrap gap-2 mb-4 no-print" role="group" aria-label="تصفية حسب المستوى"></div>
+    <div class="scroll-x max-h-[560px] overflow-y-auto border border-slate-200 rounded-xl">
+      <table>
+        <thead><tr>
+          <th>الرقم</th><th>المؤشر</th><th>المجال</th><th>المعيار</th><th style="min-width:200px">النتيجة</th><th>المستوى</th>
+        </tr></thead>
+        <tbody id="indBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ متابعة المبادرات ============ -->
+  <section class="card p-5 sm:p-7" aria-label="متابعة المبادرات">
+    <div class="flex flex-wrap items-end justify-between gap-4 mb-4">
+      <div>
+        <h2 class="text-xl font-bold">متابعة تنفيذ المبادرات</h2>
+        <p class="text-sm text-slate-500">حدّثي الحالة ونسبة الإنجاز مباشرة من الجدول؛ تُحفظ التعديلات على هذا المتصفح. جميع المبادرات تبدأ بحالة «لم تبدأ» إلى أن يحدّثها الفريق.</p>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center no-print">
+        <select id="initGoal" class="field" aria-label="الهدف"></select>
+        <select id="initStatus" class="field" aria-label="الحالة"></select>
+        <button id="initReset" class="field hover:bg-slate-50">إعادة ضبط</button>
+      </div>
+    </div>
+    <div id="initSummary" class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-5"></div>
+    <div class="scroll-x border border-slate-200 rounded-xl">
+      <table>
+        <thead><tr>
+          <th>الرمز</th><th>المبادرة</th><th>الهدف</th><th>المسؤول التنفيذي</th><th>التوقيت</th><th>مؤشر الإنجاز</th><th>الحالة</th><th style="min-width:170px">نسبة الإنجاز</th>
+        </tr></thead>
+        <tbody id="initBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="text-xs text-slate-500 leading-6 pb-6">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t-2 border-amber-300 pt-4 mb-3">
+      <p class="text-base text-ink">مديرة المدرسة: <span class="font-bold text-lg">الأستاذة عبير العلي</span></p>
+      <p class="text-sm">المدرسة الثانوية التاسعة للبنات بسكاكا - مسارات</p>
+    </div>
+    مصدر النسب الحالية: تقرير التقويم المدرسي - الذاتي، هيئة تقويم التعليم والتدريب، دورة التقويم الثانية (11 صفحة). القيم المستهدفة وحالات المبادرات من خطة التحسين المدرسية وليست من التقرير.
+  </footer>
+</main>
+
+<script>
+/* ===================== البيانات (منقولة من التقرير دون تعديل) ===================== */
+const OVERALL = 94;
+
+const DOMAINS = [
+  { id: 1, name: 'الإدارة المدرسية', value: 96.5 },
+  { id: 2, name: 'التعليم والتعلم', value: 99 },
+  { id: 3, name: 'نواتج التعلم', value: 83.25 },
+  { id: 4, name: 'البيئة المدرسية', value: 99.25 }
+];
+
+const STANDARDS = [
+  { code: '1-1', domain: 1, name: 'التخطيط', value: 100 },
+  { code: '1-2', domain: 1, name: 'قيادة العملية التعليمية', value: 99.75 },
+  { code: '1-3', domain: 1, name: 'المجتمع المدرسي', value: 99.5 },
+  { code: '1-4', domain: 1, name: 'التطوير المؤسسي', value: 89 },
+  { code: '1-5', domain: 1, name: 'حقوق المتعلم وحمايته', value: 99.5 },
+  { code: '2-1', domain: 2, name: 'بناء خبرات التعلم', value: 98.75 },
+  { code: '2-2', domain: 2, name: 'تقويم التعلم', value: 99.75 },
+  { code: '3-1', domain: 3, name: 'التحصيل التعليمي', value: 79.5 },
+  { code: '3-2', domain: 3, name: 'التطور الشخصي والصحي والاجتماعي', value: 98.75 },
+  { code: '4-1', domain: 4, name: 'المبنى المدرسي', value: 98.75 },
+  { code: '4-2', domain: 4, name: 'الأمن والسلامة', value: 99.75 }
+];
+
+const INDICATORS = [
+  ['1-1-1-1', 'تضع المدرسة خطة تشغيلية شاملة وفق أهداف تطويرية محددة', 100],
+  ['1-1-1-2', 'تتابع المدرسة تنفيذ خطتها التشغيلية، وتطورها بما يضمن تحقيق أهدافها', 100],
+  ['1-2-1-1', 'تعزز المدرسة القيم الإسلامية، والهوية الوطنية', 99.75],
+  ['1-2-1-2', 'تطبق المدرسة قيم مهنة التعليم وأخلاقياتها، وتتابع الالتزام بها', 100],
+  ['1-2-1-3', 'تطبق المدرسة إجراءات محددة لدعم الانضباط المدرسي، وتتابع الالتزام بها', 99.75],
+  ['1-2-1-4', 'تنفذ المدرسة برامج وأنشطة تربوية داعمة للسلوك الإيجابي لدى المتعلمين، ومنهم ذوو الإعاقة والموهوبون، وتتابعها', 99.75],
+  ['1-2-1-5', 'تنفذ المدرسة برامج وأنشطة إثرائية لتطوير مواهب المتعلمين، وتهيئتهم للمستقبل، وتتابعها', 99.5],
+  ['1-3-1-1', 'تعزز المدرسة بناء العلاقات الإيجابية والتعاون في المجتمع المدرسي', 99.75],
+  ['1-3-1-2', 'تعزز المدرسة مشاركة الأسرة في تعلم أبنائهم، والتحضير لمستقبلهم', 99.25],
+  ['1-3-1-3', 'تعزز المدرسة الشراكة المجتمعية لدعم التعلم والتأثير الإيجابي في المجتمع', 99.75],
+  ['1-4-1-1', 'تدعم المدرسة منسوبيها للحصول على الرخصة المهنية، وتتابعها', 73.25],
+  ['1-4-1-2', 'تدعم المدرسة التطوير المهني لمنسوبيها وفقاً لنتائج التقويم وتحليل احتياجاتهم', 99.5],
+  ['1-4-1-3', 'تطبق المدرسة التقويم الذاتي المبني على المعايير المعتمدة من الهيئة بشكل مستمر', 100],
+  ['1-4-1-4', 'تنفذ المدرسة خطة التحسين بناء على نتائج التقويم المدرسي، وتتابعها', 100],
+  ['1-5-1-1', 'تلتزم المدرسة بالمحافظة على حقوق المتعلمين، وحمايتهم', 99.25],
+  ['1-5-1-2', 'توفر المدرسة مناخاً آمناً للتعلم والنمو نفسياً واجتماعياً', 99.75],
+  ['2-1-1-1', 'توفر المدرسة فرصاً متكافئة للتعلم تلبي احتياجات المتعلمين، ومنهم ذوو الإعاقة والموهوبون', 94.75],
+  ['2-1-1-2', 'تدعم المدرسة تنفيذ المناهج بما يحقق نواتج التعلم المستهدفة', 99.5],
+  ['2-1-1-3', 'تنوع المدرسة في إستراتيجيات التعليم والتعلم لتلبية احتياجات المتعلمين، ودعم تعلمهم', 99.75],
+  ['2-1-1-4', 'تفعل المدرسة التقنية الرقمية لدعم تعلم المتعلمين وتلبية احتياجاتهم', 99.25],
+  ['2-1-1-5', 'تنفذ المدرسة أنشطة تعلم تطبيقية ترتبط بحياة المتعلمين', 99.5],
+  ['2-1-1-6', 'تنمي المدرسة المهارات القرائية والعددية الأساسية لدى المتعلمين', 97.5],
+  ['2-1-1-7', 'تنمي المدرسة مهارات التفكير والبحث والابتكار لدى المتعلمين', 99.5],
+  ['2-1-1-8', 'تنمي المدرسة المهارات العاطفية والاجتماعية لدى المتعلمين', 99.5],
+  ['2-1-1-9', 'تعزز المدرسة دافعية المتعلمين للتعلم، والاستمتاع به', 98.75],
+  ['2-2-1-1', 'تطبق المدرسة أساليب وأدوات تقويم متنوعة للكشف عن مستويات أداء المتعلمين المختلفة', 99.75],
+  ['2-2-1-2', 'تطبق المدرسة أساليب وأدوات متنوعة لتقويم نواتج التعلم المستهدفة في مناهج التعليم', 99.5],
+  ['2-2-1-3', 'تحلل المدرسة نتائج التقويم، وتوظفها في تحسين عمليات التعليم والتعلم والتقويم', 99.75],
+  ['2-2-1-4', 'تقدم المدرسة التغذية الراجعة للمتعلمين وأولياء أمورهم، وتتابع تقدمهم بشكل مستمر', 99.75],
+  ['3-1-1-1', 'يحقق المتعلمون نتائج متقدمة في الاختبارات التحصيلية للمرحلة الثانوية', 79.125],
+  ['3-1-1-2', 'يحقق المتعلمون نتائج متقدمة في اختبارات القدرات العامة للمرحلة الثانوية', 80.4275],
+  ['3-2-1-1', 'يظهر المتعلمون الاعتزاز بالقيم والهوية الوطنية', 99.75],
+  ['3-2-1-2', 'يظهر المتعلمون اتجاهات إيجابية نحو ذواتهم والآخرين', 98],
+  ['3-2-1-3', 'يظهر المتعلمون التزاماً بالممارسات الصحية السليمة', 98.75],
+  ['3-2-1-4', 'يشارك المتعلمون في الأنشطة المجتمعية والأعمال التطوعية', 99.25],
+  ['3-2-1-5', 'يلتزم المتعلمون بقواعد السلوك والانضباط المدرسي', 98.5],
+  ['3-2-1-6', 'يظهر المتعلمون الاستقلالية، والقدرة على التعلم الذاتي', 97],
+  ['3-2-1-7', 'يظهر المتعلمون اعتزازاً بثقافتهم واحتراماً للتنوع الثقافي في المجتمع', 99.75],
+  ['4-1-1-1', 'توفر المدرسة مبنى تعليمي يستوفي المواصفات والاشتراطات المعتمدة من حيث النوع والخدمات المساندة', 99.75],
+  ['4-1-1-2', 'تنظيم مبنى المدرسة ملائم لعدد المتعلمين وخصائص المرحلة العمرية، ومنهم ذوو الإعاقة', 97.25],
+  ['4-1-1-3', 'تتوافر فصول ومعامل ملائمة للعملية التعليمية تلبي احتياجات المتعلمين، ومنهم ذوو الإعاقة', 98.5],
+  ['4-1-1-4', 'تلبي المرافق والتجهيزات والخدمات المساندة احتياجات المتعلمين، ومنهم ذوو الإعاقة', 99.25],
+  ['4-2-1-1', 'تتوافر في مبنى المدرسة ومرافقها جميع متطلبات الأمن والسلامة', 99.5],
+  ['4-2-1-2', 'تتابع المدرسة صيانة المبنى وجميع مرافقه وتجهيزاته بشكل دوري', 100],
+  ['4-2-1-3', 'تتابع المدرسة نظافة المبنى المدرسي وجميع مرافقه بشكل مستمر', 100]
+].map(([code, name, value]) => {
+  const p = code.split('-');
+  return { code, name, value, domain: +p[0], std: p[0] + '-' + p[1] };
+});
+
+/* فجوات الأداء: الحالي من التقرير، والمستهدف مقترح من خطة التحسين */
+const GAPS = [
+  { code: '1-4-1-1', short: 'دعم الرخصة المهنية', current: 73.25, targets: [85, 92], note: 'سجل الرخصة · مجتمعات التعلم المهنية · زميلة مرشدة' },
+  { code: '3-1-1-1', short: 'الاختبارات التحصيلية', current: 79.125, targets: [85, 90], note: 'مراجعة تراكمية · محاكاة شهرية · مسارات الدعم الثلاثة' },
+  { code: '3-1-1-2', short: 'القدرات العامة', current: 80.4275, targets: [86, 90], note: 'قدرات كل يوم · نمط قياس في الصف · بطاقة الطالبة' }
+];
+
+const GOALS = {
+  1: 'التحصيلي',
+  2: 'القدرات',
+  3: 'الرخصة المهنية',
+  4: 'استدامة التميز'
+};
+
+const INITIATIVES = [
+  { code: 'ن1', name: 'خط الأساس وبطاقة الطالبة', goals: [1, 2], owner: 'وكيلة الشؤون التعليمية', time: 'الأسابيع 2-4', kpi: 'تقرير خط الأساس و230 بطاقة' },
+  { code: 'ن2', name: 'قدرات كل يوم (15 دقيقة × 3 أسبوعياً)', goals: [2], owner: 'وكيلة الشؤون التعليمية', time: 'من الأسبوع 5، مستمر', kpi: '3 جلسات أسبوعياً لكل فصل وحضور 90%' },
+  { code: 'ن3', name: 'نمط قياس في الصف (30% من أسئلة الاختبارات)', goals: [1, 2], owner: 'رئيسات الأقسام', time: 'بناء: الأسابيع 5-8 ثم مستمر', kpi: '40 سؤالاً محكّماً لكل مادة في الفصل' },
+  { code: 'ن4', name: 'تراكمي: مراجعة السنوات الثلاث حسب المسار', goals: [1], owner: 'معلمات مواد التحصيلي', time: 'أسبوعياً من الأسبوع 5', kpi: 'نسبة تغطية الوحدات' },
+  { code: 'ن5', name: 'محاكاة شهرية وتحليل بنود', goals: [1, 2], owner: 'وكيلة الشؤون التعليمية', time: 'شهرياً', kpi: 'تقرير شهري بأضعف خمس مهارات' },
+  { code: 'ن6', name: 'مسارات الدعم الثلاثة (تأسيس، تمكين، إتقان)', goals: [1, 2], owner: 'الموجهة الطلابية', time: 'أسبوعياً من الأسبوع 6', kpi: 'نسبة الانتقال إلى شريحة أعلى' },
+  { code: 'ن7', name: 'شريك الاستعداد: الأسرة والإرشاد', goals: [1, 2], owner: 'وكيلة شؤون الطالبات', time: 'الأسبوعان 5-6 ثم فصلياً', kpi: 'نسبة الخطط الفردية الموقعة' },
+  { code: 'ر1', name: 'سجل الرخصة وإجراء الدعم المعتمد', goals: [3], owner: 'وكيلة الشؤون التعليمية', time: 'الأسابيع 1-3', kpi: 'سجل مكتمل 100% ووثيقة إجراء معتمدة' },
+  { code: 'ر2', name: 'مجتمعات التعلم المهنية: نحو الرخصة', goals: [3], owner: 'رئيسات الأقسام', time: 'من الأسبوع 4، كل أسبوعين', kpi: 'عدد الجلسات ونسبة الحضور' },
+  { code: 'ر3', name: 'زميلة مرشدة واختباران محاكيان', goals: [3], owner: 'وكيلة الشؤون التعليمية', time: 'قبل كل موعد اختبار بـ6 أسابيع', kpi: 'فرق الدرجة بين المحاكيين' },
+  { code: 'ر4', name: 'تيسير وتحفيز وتكريم فصلي', goals: [3], owner: 'مديرة المدرسة', time: 'الأسبوع 3 ثم نهاية كل فصل', kpi: 'تقويم مواعيد منشور ومحضر تكريم' },
+  { code: 'ت1', name: 'تدقيق الشواهد الداخلي للمؤشرات الـ45', goals: [4], owner: 'منسقة التميز والجودة', time: 'الأسابيع 6-9 ثم منتصف الفصل الثاني', kpi: 'نسبة المؤشرات المكتملة الشواهد' },
+  { code: 'ت2', name: 'المؤشرات تحت المراقبة (4 مؤشرات)', goals: [4], owner: 'رئيسات فرق المجالات', time: 'الأسابيع 4-8 ثم متابعة', kpi: 'إغلاق الإجراء المحدد لكل مؤشر' }
+];
+
+const STATUSES = ['لم تبدأ', 'قيد التنفيذ', 'متأخرة', 'مكتملة'];
+const STATUS_STYLE = {
+  'لم تبدأ': 'bg-slate-100 text-slate-700 border-slate-300',
+  'قيد التنفيذ': 'bg-blue-50 text-blue-800 border-blue-300',
+  'متأخرة': 'bg-red-50 text-red-800 border-red-300',
+  'مكتملة': 'bg-emerald-50 text-emerald-800 border-emerald-300'
+};
+
+/* ===================== أدوات مساعدة ===================== */
+const COLORS = { excel: '#0a9159', prog: '#1570ef', launch: '#dc6803', prep: '#d92d20' };
+const LEVELS = [
+  { key: 'excel', name: 'التميز', min: 90 },
+  { key: 'prog', name: 'التقدم', min: 75 },
+  { key: 'launch', name: 'الانطلاق', min: 50 },
+  { key: 'prep', name: 'التهيئة', min: -Infinity }
+];
+const levelOf = v => LEVELS.find(l => v >= l.min);
+const fmt = v => String(v) + '%';
+const domainName = id => DOMAINS.find(d => d.id === id).name;
+const stdName = code => STANDARDS.find(s => s.code === code).name;
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const badge = v => {
+  const l = levelOf(v);
+  return `<span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold text-white" style="background:${COLORS[l.key]}">${l.name}</span>`;
+};
+
+Chart.defaults.font.family = '"IBM Plex Sans Arabic", Tahoma, sans-serif';
+Chart.defaults.font.size = 13;
+Chart.defaults.color = '#47605f';
+
+/* ===================== بطاقات المؤشرات العليا ===================== */
+(function renderKpis() {
+  const items = [{ name: 'الأداء العام للمدرسة', value: OVERALL, main: true }, ...DOMAINS];
+  document.getElementById('kpiCards').innerHTML = items.map(it => {
+    const l = levelOf(it.value);
+    const warn = l.key !== 'excel';
+    return `
+    <div class="card p-5 ${it.main ? 'col-span-2 lg:col-span-1 bg-gradient-to-br from-white to-emerald-50' : ''} ${warn ? 'alert-ring' : ''}">
+      <div class="flex items-start justify-between gap-2">
+        <p class="text-sm font-medium text-slate-600">${it.name}</p>
+        ${warn ? '<span class="text-[11px] font-bold text-orange-700 bg-orange-100 rounded-full px-2 py-0.5 whitespace-nowrap">فجوة رئيسية</span>' : ''}
+      </div>
+      <p class="num text-4xl font-bold mt-3" style="color:${COLORS[l.key]}">${fmt(it.value)}</p>
+      <div class="track mt-3"><span style="width:${it.value}%;background:${COLORS[l.key]}"></span></div>
+      <div class="flex items-center justify-between mt-3">
+        ${badge(it.value)}
+        <span class="text-xs text-slate-500">${warn ? 'يبعد <span class="num">' + (90 - it.value) + '</span> نقطة عن التميز' : 'مستوى التميز'}</span>
+      </div>
+    </div>`;
+  }).join('');
+})();
+
+/* ===================== بطاقات الفجوات والعدادات ===================== */
+let phase = 0;
+const gaugeCharts = [];
+
+function renderGapCards() {
+  const wrap = document.getElementById('gapCards');
+  wrap.innerHTML = GAPS.map((g, i) => {
+    const l = levelOf(g.current);
+    return `
+    <div class="rounded-2xl border-2 p-5" style="border-color:${COLORS[l.key]}33;background:linear-gradient(180deg,${COLORS[l.key]}0d,#fff 55%)">
+      <div class="flex items-center justify-between">
+        <span class="num text-sm font-bold text-slate-600">${g.code}</span>
+        ${badge(g.current)}
+      </div>
+      <h3 class="text-lg font-bold mt-1">${g.short}</h3>
+      <div class="relative h-40 mt-2">
+        <canvas id="gauge${i}" aria-label="عداد ${g.short}"></canvas>
+        <div class="absolute inset-x-0 bottom-1 text-center pointer-events-none">
+          <div class="num text-3xl font-bold" style="color:${COLORS[l.key]}">${fmt(g.current)}</div>
+          <div class="text-xs text-slate-500">الحالي</div>
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 text-center mt-3 text-sm">
+        <div class="bg-white border border-slate-200 rounded-xl py-2">
+          <div class="text-[11px] text-slate-500">المستهدف</div>
+          <div class="num font-bold text-ink" id="gt${i}"></div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl py-2">
+          <div class="text-[11px] text-slate-500">الرفع المطلوب</div>
+          <div class="num font-bold text-orange-700" id="gl${i}"></div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl py-2">
+          <div class="text-[11px] text-slate-500">الفجوة عن 90%</div>
+          <div class="num font-bold text-red-700">${+(90 - g.current).toFixed(4)}</div>
+        </div>
+      </div>
+      <p class="text-xs text-slate-600 mt-3 leading-5">${g.note}</p>
+    </div>`;
+  }).join('');
+
+  GAPS.forEach((g, i) => {
+    const l = levelOf(g.current);
+    gaugeCharts[i] = new Chart(document.getElementById('gauge' + i), {
+      type: 'doughnut',
+      data: {
+        labels: ['القيمة', 'المتبقي'],
+        datasets: [
+          { label: 'المستهدف', data: [g.targets[phase], 100 - g.targets[phase]], backgroundColor: ['#0f3d3a', '#edf1ef'], borderWidth: 0, weight: 0.35 },
+          { label: 'الحالي', data: [g.current, 100 - g.current], backgroundColor: [COLORS[l.key], '#edf1ef'], borderWidth: 0, weight: 1 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        rotation: -90, circumference: 180, cutout: '62%',
+        plugins: {
+          legend: { display: false },
+          tooltip: { rtl: true, filter: c => c.dataIndex === 0, callbacks: { label: c => c.dataset.label + ': ' + c.parsed + '%' } }
+        }
+      }
+    });
+  });
+  updatePhase();
+}
+
+function updatePhase() {
+  GAPS.forEach((g, i) => {
+    const t = g.targets[phase];
+    document.getElementById('gt' + i).textContent = t + '%';
+    document.getElementById('gl' + i).textContent = '+' + (+(t - g.current).toFixed(4));
+    gaugeCharts[i].data.datasets[0].data = [t, 100 - t];
+    gaugeCharts[i].update();
+  });
+  if (targetChart) {
+    targetChart.data.datasets[1].data = GAPS.map(g => g.targets[phase]);
+    targetChart.data.datasets[1].label = phase === 0 ? 'مستهدف المرحلة الأولى' : 'مستهدف المرحلة الثانية';
+    targetChart.update();
+  }
+  document.querySelectorAll('[data-phase]').forEach(b => b.classList.toggle('active', +b.dataset.phase === phase));
+}
+
+let targetChart = null;
+renderGapCards();
+
+targetChart = new Chart(document.getElementById('targetChart'), {
+  type: 'bar',
+  data: {
+    labels: GAPS.map(g => g.short + ' (' + g.code + ')'),
+    datasets: [
+      { label: 'الحالي (من التقرير)', data: GAPS.map(g => g.current), backgroundColor: GAPS.map(g => COLORS[levelOf(g.current).key]), borderRadius: 8, maxBarThickness: 54 },
+      { label: 'مستهدف المرحلة الأولى', data: GAPS.map(g => g.targets[0]), backgroundColor: '#0f3d3a', borderRadius: 8, maxBarThickness: 54 },
+      { type: 'line', label: 'حد التميز 90%', data: GAPS.map(() => 90), borderColor: '#0a9159', borderDash: [6, 6], borderWidth: 2, pointRadius: 0 }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      y: { min: 0, max: 100, position: 'right', ticks: { callback: v => v + '%' }, grid: { color: '#eef2f0' } },
+      x: { reverse: true, grid: { display: false } }
+    },
+    plugins: {
+      legend: { rtl: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 10 } },
+      tooltip: { rtl: true, callbacks: { label: c => c.dataset.label + ': ' + c.parsed.y + '%' } }
+    }
+  }
+});
+
+document.querySelectorAll('[data-phase]').forEach(b => b.addEventListener('click', () => { phase = +b.dataset.phase; updatePhase(); }));
+
+/* ===================== مخطط الرادار للمجالات ===================== */
+new Chart(document.getElementById('radarChart'), {
+  type: 'radar',
+  data: {
+    labels: DOMAINS.map(d => d.name),
+    datasets: [
+      { label: 'أداء المدرسة', data: DOMAINS.map(d => d.value), backgroundColor: 'rgba(15,61,58,.16)', borderColor: '#0f3d3a', borderWidth: 2.5,
+        pointBackgroundColor: DOMAINS.map(d => COLORS[levelOf(d.value).key]), pointBorderColor: '#fff', pointRadius: 7, pointHoverRadius: 9 },
+      { label: 'حد التميز 90%', data: DOMAINS.map(() => 90), borderColor: '#0a9159', borderDash: [5, 5], borderWidth: 1.5, pointRadius: 0, fill: false }
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: { r: { min: 60, max: 100, ticks: { stepSize: 10, backdropColor: 'transparent', callback: v => v + '%' }, pointLabels: { font: { size: 14, weight: '600' }, color: '#0f2a2e' }, grid: { color: '#e3e8e6' } } },
+    plugins: {
+      legend: { rtl: true, position: 'bottom', labels: { usePointStyle: true, boxWidth: 10 } },
+      tooltip: { rtl: true, callbacks: { label: c => c.dataset.label + ': ' + c.parsed.r + '%' } }
+    }
+  }
+});
+
+/* ===================== مخطط المعايير ===================== */
+const stdSel = document.getElementById('stdDomain');
+stdSel.innerHTML = '<option value="0">جميع المجالات</option>' + DOMAINS.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+
+const stdChart = new Chart(document.getElementById('stdChart'), {
+  type: 'bar',
+  data: { labels: [], datasets: [
+    { label: 'نتيجة المعيار', data: [], backgroundColor: [], borderRadius: 6, maxBarThickness: 26 },
+    { type: 'line', label: 'حد التميز 90%', data: [], borderColor: '#0a9159', borderDash: [6, 6], borderWidth: 2, pointRadius: 0 }
+  ] },
+  options: {
+    indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { min: 0, max: 100, reverse: true, ticks: { callback: v => v + '%' }, grid: { color: '#eef2f0' } },
+      y: { position: 'right', grid: { display: false }, ticks: { font: { size: 12 } } }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { rtl: true, callbacks: { label: c => c.dataset.label + ': ' + c.parsed.x + '%' } }
+    }
+  }
+});
+
+function renderStd() {
+  const d = +stdSel.value;
+  const rows = STANDARDS.filter(s => !d || s.domain === d);
+  stdChart.data.labels = rows.map(s => s.name);
+  stdChart.data.datasets[0].data = rows.map(s => s.value);
+  stdChart.data.datasets[0].backgroundColor = rows.map(s => COLORS[levelOf(s.value).key]);
+  stdChart.data.datasets[1].data = rows.map(() => 90);
+  stdChart.update();
+}
+stdSel.addEventListener('change', renderStd);
+renderStd();
+
+/* ===================== مستكشف المؤشرات ===================== */
+const indState = { level: 'all', domain: 0, q: '', sort: 'code' };
+const indDomainSel = document.getElementById('indDomain');
+indDomainSel.innerHTML = stdSel.innerHTML;
+
+function renderLevelChips() {
+  const counts = { all: INDICATORS.length };
+  LEVELS.forEach(l => counts[l.key] = INDICATORS.filter(i => levelOf(i.value).key === l.key).length);
+  const chips = [{ key: 'all', name: 'الكل' }, { key: 'gap', name: 'فرص التحسين (دون 90)' }, ...LEVELS];
+  counts.gap = INDICATORS.filter(i => i.value < 90).length;
+  document.getElementById('levelChips').innerHTML = chips.map(c =>
+    `<button class="chip ${indState.level === c.key ? 'active' : ''}" data-level="${c.key}">${c.name} <span class="num opacity-70">(${counts[c.key]})</span></button>`
+  ).join('');
+  document.querySelectorAll('[data-level]').forEach(b => b.addEventListener('click', () => { indState.level = b.dataset.level; renderLevelChips(); renderInd(); }));
+}
+
+function renderInd() {
+  let rows = INDICATORS.filter(i => {
+    const lk = levelOf(i.value).key;
+    if (indState.level === 'gap' && i.value >= 90) return false;
+    if (indState.level !== 'all' && indState.level !== 'gap' && lk !== indState.level) return false;
+    if (indState.domain && i.domain !== indState.domain) return false;
+    if (indState.q && !(i.code.includes(indState.q) || i.name.includes(indState.q))) return false;
+    return true;
+  });
+  if (indState.sort === 'asc') rows = [...rows].sort((a, b) => a.value - b.value);
+  if (indState.sort === 'desc') rows = [...rows].sort((a, b) => b.value - a.value);
+  document.getElementById('indCount').textContent = 'المعروض: ' + rows.length + ' من ' + INDICATORS.length;
+  document.getElementById('indBody').innerHTML = rows.length ? rows.map(i => {
+    const l = levelOf(i.value);
+    const gap = i.value < 90;
+    return `<tr class="${gap ? 'bg-orange-50/70' : ''}">
+      <td><span class="num font-semibold">${i.code}</span></td>
+      <td class="${gap ? 'font-semibold' : ''}" style="min-width:280px">${esc(i.name)}</td>
+      <td class="whitespace-nowrap text-slate-600">${domainName(i.domain)}</td>
+      <td class="whitespace-nowrap text-slate-600">${stdName(i.std)}</td>
+      <td><div class="flex items-center gap-3"><div class="track flex-1"><span style="width:${i.value}%;background:${COLORS[l.key]}"></span></div><span class="num font-bold w-20 text-left" style="color:${COLORS[l.key]}">${fmt(i.value)}</span></div></td>
+      <td>${badge(i.value)}</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" class="text-center text-slate-500 py-8">لا توجد مؤشرات مطابقة للتصفية الحالية.</td></tr>';
+}
+
+document.getElementById('indSearch').addEventListener('input', e => { indState.q = e.target.value.trim(); renderInd(); });
+indDomainSel.addEventListener('change', e => { indState.domain = +e.target.value; renderInd(); });
+document.getElementById('indSort').addEventListener('change', e => { indState.sort = e.target.value; renderInd(); });
+renderLevelChips();
+renderInd();
+
+/* ===================== متابعة المبادرات ===================== */
+const STORE_KEY = 'sip_s9_sakaka_initiatives_v1';
+let progress = {};
+function loadProgress() {
+  try { progress = JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { progress = {}; }
+}
+function saveProgress() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (e) { /* التخزين غير متاح: تبقى التعديلات حتى إغلاق الصفحة */ }
+}
+const stateOf = code => progress[code] || { status: 'لم تبدأ', pct: 0 };
+
+const goalSel = document.getElementById('initGoal');
+const statusSel = document.getElementById('initStatus');
+goalSel.innerHTML = '<option value="0">جميع الأهداف</option>' + Object.entries(GOALS).map(([k, v]) => `<option value="${k}">الهدف ${k}: ${v}</option>`).join('');
+statusSel.innerHTML = '<option value="">جميع الحالات</option>' + STATUSES.map(s => `<option>${s}</option>`).join('');
+
+function renderInitSummary() {
+  const all = INITIATIVES.map(i => stateOf(i.code));
+  const avg = Math.round(all.reduce((s, x) => s + x.pct, 0) / all.length);
+  const cells = [{ label: 'متوسط الإنجاز الكلي', value: avg + '%', cls: 'bg-ink text-white' }]
+    .concat(STATUSES.map(s => ({ label: s, value: all.filter(x => x.status === s).length, cls: STATUS_STYLE[s] + ' border' })));
+  document.getElementById('initSummary').innerHTML = cells.map(c =>
+    `<div class="rounded-xl p-3 ${c.cls}"><div class="text-xs opacity-80">${c.label}</div><div class="num text-2xl font-bold mt-1">${c.value}</div></div>`
+  ).join('');
+}
+
+function renderInit() {
+  const g = +goalSel.value, st = statusSel.value;
+  const rows = INITIATIVES.filter(i => (!g || i.goals.includes(g)) && (!st || stateOf(i.code).status === st));
+  document.getElementById('initBody').innerHTML = rows.length ? rows.map(i => {
+    const s = stateOf(i.code);
+    const color = s.status === 'مكتملة' ? COLORS.excel : s.status === 'متأخرة' ? COLORS.prep : s.status === 'قيد التنفيذ' ? COLORS.prog : '#94a3b8';
+    return `<tr>
+      <td><span class="font-bold">${i.code}</span></td>
+      <td class="font-semibold" style="min-width:230px">${i.name}</td>
+      <td class="whitespace-nowrap">${i.goals.map(x => `<span class="inline-block bg-slate-100 border border-slate-200 rounded-full px-2 py-0.5 text-xs ml-1">${GOALS[x]}</span>`).join('')}</td>
+      <td class="whitespace-nowrap text-slate-700">${i.owner}</td>
+      <td class="text-slate-600" style="min-width:150px">${i.time}</td>
+      <td class="text-slate-600" style="min-width:190px">${i.kpi}</td>
+      <td><select class="field text-xs font-semibold ${STATUS_STYLE[s.status]}" data-status="${i.code}" aria-label="حالة ${i.code}">${STATUSES.map(x => `<option ${x === s.status ? 'selected' : ''}>${x}</option>`).join('')}</select></td>
+      <td><div class="flex items-center gap-2">
+        <input type="range" min="0" max="100" step="5" value="${s.pct}" data-pct="${i.code}" class="flex-1" style="accent-color:${color}" aria-label="نسبة إنجاز ${i.code}">
+        <span class="num font-bold w-12 text-left" id="pv-${i.code}">${s.pct}%</span>
+      </div></td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="8" class="text-center text-slate-500 py-8">لا توجد مبادرات مطابقة للتصفية الحالية.</td></tr>';
+
+  document.querySelectorAll('[data-status]').forEach(el => el.addEventListener('change', () => {
+    const code = el.dataset.status, s = { ...stateOf(code), status: el.value };
+    if (el.value === 'مكتملة') s.pct = 100;
+    if (el.value === 'لم تبدأ') s.pct = 0;
+    progress[code] = s; saveProgress(); renderInit(); renderInitSummary();
+  }));
+  document.querySelectorAll('[data-pct]').forEach(el => {
+    el.addEventListener('input', () => { document.getElementById('pv-' + el.dataset.pct).textContent = el.value + '%'; });
+    el.addEventListener('change', () => {
+      const code = el.dataset.pct, pct = +el.value, s = { ...stateOf(code), pct };
+      if (pct === 100) s.status = 'مكتملة';
+      else if (pct > 0 && (s.status === 'لم تبدأ' || s.status === 'مكتملة')) s.status = 'قيد التنفيذ';
+      else if (pct === 0 && s.status === 'مكتملة') s.status = 'لم تبدأ';
+      progress[code] = s; saveProgress(); renderInit(); renderInitSummary();
+    });
+  });
+}
+
+goalSel.addEventListener('change', renderInit);
+statusSel.addEventListener('change', renderInit);
+document.getElementById('initReset').addEventListener('click', () => {
+  if (confirm('إعادة جميع المبادرات إلى حالة «لم تبدأ»؟')) { progress = {}; saveProgress(); renderInit(); renderInitSummary(); }
+});
+
+loadProgress();
+renderInit();
+renderInitSummary();
+</script>
+</body>
+</html>
